@@ -17,8 +17,8 @@ func servDeviceInfo(c *gin.Context) {
 func servAllInfo(c *gin.Context) {
 	allInfo := new(AllStats)
 
-	allInfo.OpticalStats = *getOpticalInfo()
-	allInfo.DeviceStats = *getDeviceInfo()
+	allInfo.OpticalStats = getOpticalInfo()
+	allInfo.DeviceStats = getDeviceInfo()
 
 	c.JSON(http.StatusOK, allInfo)
 }

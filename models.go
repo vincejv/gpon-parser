@@ -18,6 +18,6 @@ type OpticalStats struct {
 }
 
 type AllStats struct {
-	DeviceStats  DeviceStats  `json:"deviceStats"`
-	OpticalStats OpticalStats `json:"opticalStats"`
+	DeviceStats  *DeviceStats  `json:"deviceStats"`
+	OpticalStats *OpticalStats `json:"opticalStats"`
 }
