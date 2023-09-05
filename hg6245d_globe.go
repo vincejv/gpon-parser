@@ -7,7 +7,21 @@ import (
 	"github.com/antchfx/htmlquery"
 )
 
-func getOpticalInfo() *OpticalStats {
+func (o HG6245D_Globe) GetGponUrl() string {
+	return "http://globebroadband.net/login_new_globe.asp"
+}
+
+// cron job
+func (o HG6245D_Globe) UpdateCachedPage() {
+	doc, err := htmlquery.LoadURL(gponSvc.GetGponUrl())
+	if err == nil {
+		cachedPage.SetPage(doc)
+	} else {
+		cachedPage.SetPage(nil)
+	}
+}
+
+func (o HG6245D_Globe) GetOpticalInfo() *OpticalStats {
 	parsedList := make([]string, 0, 5)
 	for i := 1; i < 6; i++ {
 		htmlNode := htmlquery.FindOne(cachedPage.GetPage(), fmt.Sprintf("/html/body/div[1]/div[1]/div[2]/div/div[4]/ul/li[%d]/span[2]", i))
@@ -24,7 +38,7 @@ func getOpticalInfo() *OpticalStats {
 	return opticalInfo
 }
 
-func getDeviceInfo() *DeviceStats {
+func (o HG6245D_Globe) GetDeviceInfo() *DeviceStats {
 	parsedList := make([]string, 0, 6)
 	for i := 1; i < 7; i++ {
 		htmlNode := htmlquery.FindOne(cachedPage.GetPage(), fmt.Sprintf("/html/body/div[1]/div[1]/div[2]/div/div[5]/ul/li[%d]/span[2]", i))
