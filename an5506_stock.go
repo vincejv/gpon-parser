@@ -41,7 +41,9 @@ func (o AN5506_Stock) UpdateCachedPage() {
 	parsePage(client, gponSvc.GetGponUrl()+"/state/opt_power.asp", cachedPage)
 	parsePage(client, gponSvc.GetGponUrl()+"/state/deviceInfor.asp", cachedPage2)
 
-	client.Get(o.GetGponUrl() + "/goform/webLogout")
+	req, _ = http.NewRequest("GET", o.GetGponUrl()+"/goform/webLogout", nil)
+	req.Header.Set("Referer", "http://192.168.254.254/menu_ph_globe.asp") // must define a referer to logout cleanly
+	client.Do(req)
 }
 
 func parsePage(client http.Client, url string, docPage *DocPage) {
