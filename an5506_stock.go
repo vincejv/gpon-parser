@@ -29,8 +29,8 @@ func (o AN5506_Stock) UpdateCachedPage() {
 	client := http.Client{Jar: jar}
 
 	form := url.Values{}
-	form.Add("User", "admin")                      // superadmin username
-	form.Add("Passwd", "3UJUh2VemEfUtesEchEC2d2e") // superadmin password
+	form.Add("User", "user")          // webgui username
+	form.Add("Passwd", "tattoo@home") // webgui password
 	req, _ := http.NewRequest("POST", o.GetGponUrl()+"/goform/webLogin", strings.NewReader(form.Encode()))
 	req.Header.Set("Referer", "http://127.0.0.1/gpon-parser") // must define a referer or it will fail
 	_, err = client.Do(req)
