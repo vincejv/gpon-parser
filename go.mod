@@ -1,6 +1,6 @@
 module vincejv/gpon-parser-go
 
-go 1.21.0
+go 1.21
 
 require (
 	github.com/antchfx/htmlquery v1.3.0

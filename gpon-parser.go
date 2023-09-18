@@ -21,7 +21,7 @@ func main() {
 	router.GET("/gpon/deviceInfo", servDeviceInfo)
 	router.GET("/gpon/allInfo", servAllInfo)
 
-	router.Run("0.0.0.0:8080")
+	router.Run("0.0.0.0:8092")
 }
 
 func initGponSvc() {
