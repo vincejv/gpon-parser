@@ -24,7 +24,7 @@ func (o AN5506_Stock) UpdateCachedPage() {
 	}
 	jar, err := cookiejar.New(&options)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		cachedPage.SetPage(nil)
 		cachedPage2.SetPage(nil)
 		return
@@ -38,7 +38,7 @@ func (o AN5506_Stock) UpdateCachedPage() {
 	// 1. Login to UI
 	req, err := http.NewRequest("POST", o.GetGponUrl()+"/goform/webLogin", strings.NewReader(form.Encode()))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		cachedPage.SetPage(nil)
 		cachedPage2.SetPage(nil)
 		return
@@ -48,11 +48,12 @@ func (o AN5506_Stock) UpdateCachedPage() {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		cachedPage.SetPage(nil)
 		cachedPage2.SetPage(nil)
 		return
 	}
+	log.Println("test4")
 	defer resp.Body.Close()
 
 	// 2. Get optical power
@@ -64,7 +65,7 @@ func (o AN5506_Stock) UpdateCachedPage() {
 	// 4. Logout from UI
 	req, err = http.NewRequest("GET", o.GetGponUrl()+"/goform/webLogout", nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		cachedPage.SetPage(nil)
 		cachedPage2.SetPage(nil)
 		return
@@ -73,7 +74,7 @@ func (o AN5506_Stock) UpdateCachedPage() {
 	req.Header.Set("Referer", "http://192.168.254.254/menu_ph_globe.asp") // must define a referer to logout cleanly
 	resp, err = client.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 	defer resp.Body.Close()
@@ -82,17 +83,17 @@ func (o AN5506_Stock) UpdateCachedPage() {
 func parsePage(client http.Client, url string, docPage *DocPage) {
 	resp, err := client.Get(url)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	doc, err := htmlquery.Parse(resp.Body)
 	if err == nil {
 		docPage.SetPage(doc)
 	} else {
-		log.Fatal(err)
+		log.Println(err)
 		docPage.SetPage(nil)
 	}
 

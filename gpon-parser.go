@@ -31,7 +31,7 @@ func initGponSvc() {
 		} else if strings.EqualFold(os.Args[1], "hg6245d_globe") {
 			gponSvc = new(HG6245D_Globe)
 		} else {
-			log.Fatal("Invalid ONT model provided in args, valid args are ['an5506_stock', 'hg6245d_globe']")
+			log.Println("Invalid ONT model provided in args, valid args are ['an5506_stock', 'hg6245d_globe']")
 			os.Exit(-10)
 		}
 	} else {
