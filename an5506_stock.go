@@ -53,7 +53,6 @@ func (o AN5506_Stock) UpdateCachedPage() {
 		cachedPage2.SetPage(nil)
 		return
 	}
-	log.Println("test4")
 	defer resp.Body.Close()
 
 	// 2. Get optical power
