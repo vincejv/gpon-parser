@@ -46,6 +46,7 @@ func main() {
 
 func initGponSvc() {
 	telnetInit.SetFlag(false)
+	telnetScripts.SetFlag(false)
 
 	model := os.Getenv("ONT_MODEL")
 	if len(model) > 0 {

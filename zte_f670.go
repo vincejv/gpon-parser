@@ -24,6 +24,7 @@ import (
 
 var client http.Client
 var telnetInit GlobalFlag
+var telnetScripts GlobalFlag
 var telnetCreds LoginCreds
 var deviceStatCached CachedStat
 
@@ -224,6 +225,7 @@ func (o ZTEF670L) GetStatsFromTelnet() (deviceInfo *DeviceStats) {
 	if err != nil {
 		if err.Error() == "access denied" {
 			telnetInit.SetFlag(false)
+			telnetScripts.SetFlag(false)
 			log.Println("Unable to login to telnet with the last known credentials, will retry to regenerate credentials after 5 seconds")
 			time.Sleep(5 * time.Second)
 			return o.GetStatsFromTelnet()
@@ -233,7 +235,13 @@ func (o ZTEF670L) GetStatsFromTelnet() (deviceInfo *DeviceStats) {
 		return deviceInfo
 	}
 
-	//execTelnet(conn, `ifconfig nbif0 mtu 1508 up`)
+	// custom commands to run in telnet once
+	if !telnetScripts.GetFlag() {
+		telnetScripts.SetFlag(true)
+		log.Println("Running telnet custom scripts")
+		execTelnet(conn, `ifconfig nbif0 mtu 1600 up`)
+	}
+
 	telnetResp := strings.Split(execTelnet(conn, `cat /proc/cpuusage && cat /proc/meminfo | grep "MemFree\|MemTotal" && setmac show | grep "2176\|2177" && cat /proc/uptime`), "\n")
 	execTelnet(conn, `exit`)
 
