@@ -290,8 +290,10 @@ func (o ZTEF670L) GetOpticalInfo() *OpticalStats {
 		opticalInfo.RxPower = rxPowerParsed / 10000
 		opticalInfo.TxPower = txPowerParsed / 10000
 		opticalInfo.Temperature, _ = strconv.ParseFloat(parsedList[4], 64)
-		opticalInfo.SupplyVoltage, _ = strconv.ParseFloat(parsedList[2], 64)
-		opticalInfo.BiasCurrent, _ = strconv.ParseFloat(parsedList[3], 64)
+		buff, _ := strconv.ParseFloat(parsedList[2], 64)
+		opticalInfo.SupplyVoltage = buff / 1000000
+		buff, _ = strconv.ParseFloat(parsedList[3], 64)
+		opticalInfo.BiasCurrent = buff / 1000
 	}
 
 	return opticalInfo
