@@ -12,3 +12,6 @@ type HG6245D_Globe struct {
 
 type AN5506_Stock struct {
 }
+
+type ZTEF670L struct {
+}

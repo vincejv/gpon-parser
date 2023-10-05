@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -8,8 +9,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+/**
+
+Available ENVIRONMENT Variables
+
+ONT_WEB_HOST
+ONT_WEB_PORT
+ONT_WEB_PROTOCOL
+ONT_WEB_USER
+ONT_WEB_PASS
+ONT_TELNET_PORT
+LISTEN_PORT
+LISTEN_IP
+
+**/
+
 func main() {
-	log.Println("Starting GPON Parser - GO Edition")
+	log.Println("Starting GPON Parser")
+
 	initGponSvc()
 	runCronJobs()
 
@@ -21,22 +38,33 @@ func main() {
 	router.GET("/gpon/deviceInfo", servDeviceInfo)
 	router.GET("/gpon/allInfo", servAllInfo)
 
-	router.Run("0.0.0.0:8092")
+	ip := getenv("LISTEN_IP", "0.0.0.0")
+	port := getenv("LISTEN_PORT", "8092")
+	log.Printf("Starting web server on %s:%s\n", ip, port)
+	router.Run(fmt.Sprintf("%s:%s", ip, port))
 }
 
 func initGponSvc() {
-	if len(os.Args) >= 2 {
-		if strings.EqualFold(os.Args[1], "an5506_stock") {
+	telnetInit.SetFlag(false)
+
+	model := os.Getenv("ONT_MODEL")
+	if len(model) > 0 {
+		if strings.EqualFold(model, "an5506_stock") {
+			log.Println("ONT Model is Fiberhome AN5506")
 			gponSvc = new(AN5506_Stock)
-		} else if strings.EqualFold(os.Args[1], "hg6245d_globe") {
+		} else if strings.EqualFold(model, "hg6245d_globe") {
+			log.Println("ONT Model is Fiberhome HG6245D")
 			gponSvc = new(HG6245D_Globe)
+		} else if strings.EqualFold(model, "zte_f670") {
+			log.Println("ONT Model is ZTE F670L")
+			gponSvc = new(ZTEF670L)
 		} else {
-			log.Println("Invalid ONT model provided in args, valid args are ['an5506_stock', 'hg6245d_globe']")
+			log.Println("Invalid ONT model provided in env variable 'ONT_MODEL', valid args are ['an5506_stock', 'hg6245d_globe', 'zte_f670']")
 			os.Exit(-10)
 		}
 	} else {
 		// by default use AN5506 stock
-		log.Println("Did not specify any ONT models in CLI args, using default model Fiberhome AN5506")
+		log.Println("Did not specify any ONT models in env variable 'ONT_MODEL', using default model Fiberhome AN5506")
 		gponSvc = new(AN5506_Stock)
 	}
 }

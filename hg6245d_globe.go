@@ -8,7 +8,9 @@ import (
 )
 
 func (o HG6245D_Globe) GetGponUrl() string {
-	return "http://globebroadband.net/login_new_globe.asp"
+	host := getenv("ONT_WEB_HOST", "globebroadband.net")
+	port := getenv("ONT_WEB_PORT", "80")
+	return fmt.Sprintf("http://%s:%s/login_new_globe.asp", host, port)
 }
 
 // cron job

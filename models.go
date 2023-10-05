@@ -1,12 +1,13 @@
 package main
 
 type DeviceStats struct {
-	MemoryUsage     float64 `json:"memoryUsage"`
-	CpuUsage        float64 `json:"cpuUsage"`
-	DeviceModel     string  `json:"deviceModel"`
-	ModelSerial     string  `json:"modelSerial"`
-	SoftwareVersion string  `json:"softwareVersion"`
-	Uptime          int64   `json:"uptime"`
+	MemoryUsage     float64   `json:"memoryUsage"`
+	CpuUsage        float64   `json:"cpuUsage"`
+	CpuDtlUsage     []float64 `json:"cpuDtlUsage"`
+	DeviceModel     string    `json:"deviceModel"`
+	ModelSerial     string    `json:"modelSerial"`
+	SoftwareVersion string    `json:"softwareVersion"`
+	Uptime          int64     `json:"uptime"`
 }
 
 type OpticalStats struct {

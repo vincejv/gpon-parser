@@ -14,7 +14,10 @@ import (
 )
 
 func (o AN5506_Stock) GetGponUrl() string {
-	return "http://globebroadband.net"
+	host := getenv("ONT_WEB_HOST", "globebroadband.net")
+	port := getenv("ONT_WEB_PORT", "80")
+	webProtocol := getenv("ONT_WEB_PROTOCOL", "http")
+	return fmt.Sprintf("%s://%s:%s", webProtocol, host, port)
 }
 
 // cron job
@@ -32,8 +35,8 @@ func (o AN5506_Stock) UpdateCachedPage() {
 
 	client := http.Client{Jar: jar}
 	form := url.Values{}
-	form.Add("User", "user")          // webgui username
-	form.Add("Passwd", "tattoo@home") // webgui password
+	form.Add("User", getenv("ONT_WEB_USER", "user"))          // webgui username
+	form.Add("Passwd", getenv("ONT_WEB_PASS", "tattoo@home")) // webgui password
 
 	// 1. Login to UI
 	req, err := http.NewRequest("POST", o.GetGponUrl()+"/goform/webLogin", strings.NewReader(form.Encode()))
@@ -56,10 +59,10 @@ func (o AN5506_Stock) UpdateCachedPage() {
 	defer resp.Body.Close()
 
 	// 2. Get optical power
-	parsePage(client, gponSvc.GetGponUrl()+"/state/opt_power.asp", cachedPage)
+	o.parsePage(client, gponSvc.GetGponUrl()+"/state/opt_power.asp", cachedPage)
 
 	// 3. Get device information
-	parsePage(client, gponSvc.GetGponUrl()+"/state/deviceInfor.asp", cachedPage2)
+	o.parsePage(client, gponSvc.GetGponUrl()+"/state/deviceInfor.asp", cachedPage2)
 
 	// 4. Logout from UI
 	req, err = http.NewRequest("GET", o.GetGponUrl()+"/goform/webLogout", nil)
@@ -70,7 +73,7 @@ func (o AN5506_Stock) UpdateCachedPage() {
 		return
 	}
 
-	req.Header.Set("Referer", "http://192.168.254.254/menu_ph_globe.asp") // must define a referer to logout cleanly
+	req.Header.Set("Referer", o.GetGponUrl()+"/menu_ph_globe.asp") // must define a referer to logout cleanly
 	resp, err = client.Do(req)
 	if err != nil {
 		log.Println(err)
@@ -79,7 +82,7 @@ func (o AN5506_Stock) UpdateCachedPage() {
 	defer resp.Body.Close()
 }
 
-func parsePage(client http.Client, url string, docPage *DocPage) {
+func (o AN5506_Stock) parsePage(client http.Client, url string, docPage *DocPage) {
 	resp, err := client.Get(url)
 	if err != nil {
 		log.Println(err)
