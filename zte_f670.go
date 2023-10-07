@@ -286,8 +286,9 @@ func (o ZTEF670L) GetOpticalInfo() *OpticalStats {
 
 		parsedList := make([]string, 0, 5)
 		for i := 1; i < 6; i++ {
-			htmlNode := htmlquery.FindOne(cachedPage.GetPage(), fmt.Sprintf("/html/body/div[3]/div[1]/div[3]/div[1]/table[2]/tbody/tr[%d]/td[2]", i))
-			parsedList = append(parsedList, normalizeString(htmlquery.InnerText(htmlNode)))
+			if parseHtmlPage(&parsedList, fmt.Sprintf("/html/body/div[3]/div[1]/div[3]/div[1]/table[2]/tbody/tr[%d]/td[2]", i)) != nil {
+				return opticalInfo
+			}
 		}
 
 		rxPower := strings.Split(strings.Split(cachedPage.docStr, `var RxPower = "`)[1], `";`)[0]
@@ -321,8 +322,9 @@ func (o ZTEF670L) GetDeviceInfo() *DeviceStats {
 		// -- stats parsed from WEB UI
 		parsedList := make([]string, 0, 6)
 		for i := 1; i < 5; i++ {
-			htmlNode := htmlquery.FindOne(cachedPage2.GetPage(), fmt.Sprintf("/html/body/div[3]/div[1]/div[3]/table[2]/tbody/tr[%d]/td[2]", i))
-			parsedList = append(parsedList, normalizeString(htmlquery.InnerText(htmlNode)))
+			if parseHtmlPage(&parsedList, fmt.Sprintf("/html/body/div[3]/div[1]/div[3]/table[2]/tbody/tr[%d]/td[2]", i)) != nil {
+				return deviceInfo
+			}
 		}
 
 		deviceInfo.DeviceModel = parsedList[0]

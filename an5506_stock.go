@@ -110,8 +110,9 @@ func (o AN5506_Stock) GetOpticalInfo() *OpticalStats {
 
 		parsedList := make([]string, 0, 5)
 		for i := 2; i < 7; i++ {
-			htmlNode := htmlquery.FindOne(cachedPage.GetPage(), fmt.Sprintf("/html/body/form/table[3]/tbody/tr[%d]/td[2]", i))
-			parsedList = append(parsedList, normalizeString(htmlquery.InnerText(htmlNode)))
+			if parseHtmlPage(&parsedList, fmt.Sprintf("/html/body/form/table[3]/tbody/tr[%d]/td[2]", i)) != nil {
+				return opticalInfo
+			}
 		}
 		opticalInfo.TxPower, _ = strconv.ParseFloat(removeLastNChars(parsedList[0], 4), 64)
 		opticalInfo.RxPower, _ = strconv.ParseFloat(removeLastNChars(parsedList[1], 4), 64)
@@ -131,8 +132,9 @@ func (o AN5506_Stock) GetDeviceInfo() *DeviceStats {
 
 		parsedList := make([]string, 0, 6)
 		for i := 2; i < 16; i++ {
-			htmlNode := htmlquery.FindOne(cachedPage2.GetPage(), fmt.Sprintf("/html/body/form/table[3]/tbody/tr[%d]/td[2]", i))
-			parsedList = append(parsedList, normalizeString(htmlquery.InnerText(htmlNode)))
+			if parseHtmlPage(&parsedList, fmt.Sprintf("/html/body/form/table[3]/tbody/tr[%d]/td[2]", i)) != nil {
+				return deviceInfo
+			}
 		}
 
 		deviceInfo.DeviceModel = parsedList[2]

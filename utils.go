@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/antchfx/htmlquery"
 	"github.com/reiver/go-telnet"
 )
 
@@ -136,4 +137,13 @@ func getenv(key, fallback string) string {
 		return fallback
 	}
 	return value
+}
+
+func parseHtmlPage(elemList *[]string, xpath string) error {
+	htmlNode := htmlquery.FindOne(cachedPage.GetPage(), xpath)
+	if htmlNode != nil {
+		*elemList = append(*elemList, normalizeString(htmlquery.InnerText(htmlNode)))
+		return nil
+	}
+	return errors.New("unable to find xpath: " + xpath)
 }
