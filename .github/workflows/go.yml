@@ -33,9 +33,9 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY_IMAGE }}
-        tags: |
-          # set latest tag for default branch
-          type=raw,value=latest,enable={{is_default_branch}}
+          tags: |
+            # set latest tag for default branch
+            type=raw,value=latest,enable={{is_default_branch}}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -83,9 +83,9 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY_IMAGE }}
-        tags: |
-          # set latest tag for default branch
-          type=raw,value=latest,enable={{is_default_branch}}
+          tags: |
+            # set latest tag for default branch
+            type=raw,value=latest,enable={{is_default_branch}}
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
