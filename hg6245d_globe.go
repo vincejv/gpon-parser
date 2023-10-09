@@ -30,7 +30,7 @@ func (o HG6245D_Globe) GetOpticalInfo() *OpticalStats {
 		opticalInfo = new(OpticalStats)
 		parsedList := make([]string, 0, 5)
 		for i := 1; i < 6; i++ {
-			if parseHtmlPage(&parsedList, fmt.Sprintf("/html/body/div[1]/div[1]/div[2]/div/div[4]/ul/li[%d]/span[2]", i)) != nil {
+			if parseHtmlPage(&parsedList, cachedPage, fmt.Sprintf("/html/body/div[1]/div[1]/div[2]/div/div[4]/ul/li[%d]/span[2]", i)) != nil {
 				return opticalInfo
 			}
 		}
@@ -52,7 +52,7 @@ func (o HG6245D_Globe) GetDeviceInfo() *DeviceStats {
 		deviceInfo = new(DeviceStats)
 		parsedList := make([]string, 0, 6)
 		for i := 1; i < 7; i++ {
-			if parseHtmlPage(&parsedList, fmt.Sprintf("/html/body/div[1]/div[1]/div[2]/div/div[5]/ul/li[%d]/span[2]", i)) != nil {
+			if parseHtmlPage(&parsedList, cachedPage, fmt.Sprintf("/html/body/div[1]/div[1]/div[2]/div/div[5]/ul/li[%d]/span[2]", i)) != nil {
 				return deviceInfo
 			}
 		}

@@ -147,7 +147,7 @@ func (o ZTEF670L) UpdateCachedPage() {
 	o.parsePage(client, gponSvc.GetGponUrl()+"/getpage.gch?pid=1002&nextpage=pon_status_link_info_t.gch", cachedPage)
 
 	// 3. Get device information
-	o.parsePage(client, gponSvc.GetGponUrl()+"/template.gch", cachedPage2)
+	o.parsePage(client, gponSvc.GetGponUrl()+"/getpage.gch?pid=1002&nextpage=status_dev_info_t.gch", cachedPage2)
 
 	// 4. Logout from UI
 	form = url.Values{}
@@ -286,7 +286,7 @@ func (o ZTEF670L) GetOpticalInfo() *OpticalStats {
 
 		parsedList := make([]string, 0, 5)
 		for i := 1; i < 6; i++ {
-			if parseHtmlPage(&parsedList, fmt.Sprintf("/html/body/div[3]/div[1]/div[3]/div[1]/table[2]/tbody/tr[%d]/td[2]", i)) != nil {
+			if parseHtmlPage(&parsedList, cachedPage, fmt.Sprintf("/html/body/div[3]/div[1]/div[3]/div[1]/table[2]/tbody/tr[%d]/td[2]", i)) != nil {
 				return opticalInfo
 			}
 		}
@@ -321,15 +321,14 @@ func (o ZTEF670L) GetDeviceInfo() *DeviceStats {
 
 		// -- stats parsed from WEB UI
 		parsedList := make([]string, 0, 6)
-		for i := 1; i < 5; i++ {
-			if parseHtmlPage(&parsedList, fmt.Sprintf("/html/body/div[3]/div[1]/div[3]/table[2]/tbody/tr[%d]/td[2]", i)) != nil {
+		for i := 1; i < 6; i++ {
+			if parseHtmlPage(&parsedList, cachedPage2, fmt.Sprintf("/html/body/div[3]/div[1]/div[3]/table[2]/tbody/tr[%d]/td[2]", i)) != nil {
 				return deviceInfo
 			}
 		}
 
-		deviceInfo.DeviceModel = parsedList[0]
+		deviceInfo.DeviceModel = fmt.Sprintf("%s %s", parsedList[0], parsedList[2])
 		deviceInfo.SoftwareVersion = parsedList[3]
-
 	}
 
 	return deviceInfo

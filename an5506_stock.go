@@ -110,7 +110,7 @@ func (o AN5506_Stock) GetOpticalInfo() *OpticalStats {
 
 		parsedList := make([]string, 0, 5)
 		for i := 2; i < 7; i++ {
-			if parseHtmlPage(&parsedList, fmt.Sprintf("/html/body/form/table[3]/tbody/tr[%d]/td[2]", i)) != nil {
+			if parseHtmlPage(&parsedList, cachedPage, fmt.Sprintf("/html/body/form/table[3]/tbody/tr[%d]/td[2]", i)) != nil {
 				return opticalInfo
 			}
 		}
@@ -132,7 +132,7 @@ func (o AN5506_Stock) GetDeviceInfo() *DeviceStats {
 
 		parsedList := make([]string, 0, 6)
 		for i := 2; i < 16; i++ {
-			if parseHtmlPage(&parsedList, fmt.Sprintf("/html/body/form/table[3]/tbody/tr[%d]/td[2]", i)) != nil {
+			if parseHtmlPage(&parsedList, cachedPage2, fmt.Sprintf("/html/body/form/table[3]/tbody/tr[%d]/td[2]", i)) != nil {
 				return deviceInfo
 			}
 		}

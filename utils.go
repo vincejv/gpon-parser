@@ -139,8 +139,8 @@ func getenv(key, fallback string) string {
 	return value
 }
 
-func parseHtmlPage(elemList *[]string, xpath string) error {
-	htmlNode := htmlquery.FindOne(cachedPage.GetPage(), xpath)
+func parseHtmlPage(elemList *[]string, page *DocPage, xpath string) error {
+	htmlNode := htmlquery.FindOne(page.GetPage(), xpath)
 	if htmlNode != nil {
 		*elemList = append(*elemList, normalizeString(htmlquery.InnerText(htmlNode)))
 		return nil
