@@ -1,15 +1,45 @@
-# GPON Parser
+# GPON Parser (GPON Stats exporter)
 
 Supports the following ONT models
 
 * FiberHome HG6245D (Globe Telecom Philippines firmware)
-* FiberHome AN5506_04F1A (Globe Telecom Philippines firmware)
+  * `ONT_MODEL: hg6245d_globe`
+* FiberHome AN5506_04F1A (Globe Telecom Philippines firmware) and other generic FH ONT with generic firmware
+  * `ONT_MODEL: an5506_stock`
 * ZTE F670
+  * `ONT_MODEL: zte_f670`
 * ZTE F660
+  * `ONT_MODEL: zte_f670`
+
+## Environment variables
+* `ONT_WEB_HOST`
+  * IP address of ONT
+  * Default: depends on modem
+* `ONT_WEB_PORT`
+  * Port on which ONT Web UI is listening to
+  * Default: depends on modem
+* `ONT_WEB_PROTOCOL`
+  * Web protocol which the ONT web gui uses, typically set as `http` or `https`
+  * Default: `http`
+* `ONT_WEB_USER`
+  * ONT Web UI username
+  * Default: depends on modem
+* `ONT_WEB_PASS`
+  * ONT Web UI password
+  * Default: depends on modem
+* `ONT_TELNET_PORT`
+  * ONT Web UI password
+  * Default: `23`
+* `LISTEN_PORT`
+  * Port on which the exporter listens to
+  * Default: `8092`
+* `LISTEN_IP`
+  * Ip address on which the exporter listens to
+  * Default: `0.0.0.0`
 
 ## Running
 Docker Pull
-```
+```sh
 docker pull vincejv/gpon-parser:latest
 ```
 Docker Run
@@ -85,13 +115,24 @@ services:
 
 ## Footnotes
 
-### Compiling
-```
+### Building the package
+```sh
 go build -ldflags "-s -w"
+```
+
+### Running
+```sh
+go run .
 ```
 
 ### ARM Build on Windows
 ```powershell
 $env:GOARCH='arm'
 $env:GOOS='linux'
+```
+
+### ARM Build on Linux
+```sh
+export GOARCH='arm'
+export GOOS='linux'
 ```

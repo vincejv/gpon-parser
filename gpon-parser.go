@@ -37,6 +37,7 @@ func main() {
 	router.GET("/gpon/opticalInfo", servOpticalInfo)
 	router.GET("/gpon/deviceInfo", servDeviceInfo)
 	router.GET("/gpon/allInfo", servAllInfo)
+	router.GET("/health", health)
 
 	ip := getenv("LISTEN_IP", "0.0.0.0")
 	port := getenv("LISTEN_PORT", "8092")
