@@ -61,17 +61,21 @@ jobs:
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
-          name: digests
+          name: digests-${{ matrix.platform }}
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
-          overwrite: true
 
   merge:
     runs-on: ubuntu-latest
     needs:
       - build
     steps:
+      - name: Merge Artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: digests
+          pattern: digests-*
       - name: Download digests
         uses: actions/download-artifact@v4
         with:
