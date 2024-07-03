@@ -78,6 +78,8 @@ jobs:
         with:
           name: digests
           pattern: digests-*
+          delete-merged: true
+          retention-days: 1
       - name: Download digests
         uses: actions/download-artifact@v4
         with:
