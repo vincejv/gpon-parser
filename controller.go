@@ -10,7 +10,7 @@ import (
 
 func servOpticalInfo(c *gin.Context) {
 	stat := gponSvc.GetOpticalInfo()
-	if stat.Temperature > 0.0 {
+	if stat.Temperature > 0.0 && stat.RxPower < -5.0 {
 		c.JSON(http.StatusOK, stat)
 	} else {
 		log.Println("Unable to fetch gpon optical stats at the moment, returning http 403")
