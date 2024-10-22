@@ -160,7 +160,7 @@ func (o ZLTG3000A) GetOpticalInfo() *OpticalStats {
 
 		opticalInfo.TxPower, _ = o.ConvertPowerToDBm(gp.TxPower)
 		opticalInfo.RxPower, _ = o.ConvertPowerToDBm(gp.RxPower)
-		opticalInfo.Temperature, _ = o.ConvertPowerToDBm(gp.WorkTemperature)
+		opticalInfo.Temperature, _ = o.ConvertWorkTemperature(gp.WorkTemperature)
 		// opticalInfo.SupplyVoltage  info not available
 		// opticalInfo.BiasCurrent    info not available
 	}
@@ -197,8 +197,8 @@ func (o ZLTG3000A) ConvertPowerToDBm(power string) (float64, error) {
 	// Perform the conversion: log10(power / 10000)
 	convertedPower := math.Log10(powerVal / 1e4)
 
-	// Round the result to one decimal place
-	convertedPower = math.Round(convertedPower*100) / 10
+	// Approximate the result
+	convertedPower = math.Round(convertedPower*100000) / 10000
 
 	// Return the raw float value instead of a formatted string
 	return convertedPower, nil
@@ -215,9 +215,9 @@ func (o ZLTG3000A) ConvertWorkTemperature(workTemperature string) (float64, erro
 	// Calculate the temperature based on the conditions
 	var temperature float64
 	if r >= math.Pow(2, 15) {
-		temperature = -math.Round((math.Pow(2, 16) - r) / 256)
+		temperature = -((math.Pow(2, 16) - r) / 256) // No rounding to keep decimal precision
 	} else {
-		temperature = math.Round(r / 256)
+		temperature = r / 256 // No rounding to keep decimal precision
 	}
 
 	return temperature, nil
