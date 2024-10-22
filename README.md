@@ -10,6 +10,8 @@ Supports the following ONT models
   * `ONT_MODEL: zte_f670`
 * ZTE F660
   * `ONT_MODEL: zte_f670`
+* ZLT G3000A (Globe Telecom Philippines firmware)
+  * `ONT_MODEL: zlt_g3000a`
 
 ## Environment variables
 * `ONT_WEB_HOST`

@@ -12,6 +12,11 @@ type DocPage struct {
 	docStr string
 }
 
+type GponPayload struct {
+	sync.RWMutex
+	doc *ZLTG3000A_Payload
+}
+
 func (docPage *DocPage) GetPage() *html.Node {
 	docPage.RLock()
 	defer docPage.RUnlock()
@@ -34,6 +39,18 @@ func (docPage *DocPage) SetStrPage(docStr string) {
 	docPage.Lock()
 	docPage.docStr = docStr
 	docPage.Unlock()
+}
+
+func (gponPayload *GponPayload) GetGponData() *ZLTG3000A_Payload {
+	gponPayload.RLock()
+	defer gponPayload.RUnlock()
+	return gponPayload.doc
+}
+
+func (gponPayload *GponPayload) SetGponData(payload *ZLTG3000A_Payload) {
+	gponPayload.Lock()
+	gponPayload.doc = payload
+	gponPayload.Unlock()
 }
 
 type LoginCreds struct {

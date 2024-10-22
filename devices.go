@@ -15,3 +15,6 @@ type AN5506_Stock struct {
 
 type ZTEF670L struct {
 }
+
+type ZLTG3000A struct {
+}
