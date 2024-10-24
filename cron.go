@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/go-co-op/gocron"
@@ -8,6 +9,7 @@ import (
 
 func runCronJobs() {
 	s := gocron.NewScheduler(time.UTC)
-	s.Every(25).Seconds().Do(gponSvc.UpdateCachedPage)
+	pollTime, _ := strconv.Atoi(getenv("ONT_POLL_SEC", "60")) // ignore error, default to 25 on failure
+	s.Every(pollTime).Seconds().Do(gponSvc.UpdateCachedPage)
 	s.StartAsync()
 }

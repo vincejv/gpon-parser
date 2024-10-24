@@ -42,6 +42,7 @@ func main() {
 	ip := getenv("LISTEN_IP", "0.0.0.0")
 	port := getenv("LISTEN_PORT", "8092")
 	log.Printf("Starting web server on %s:%s\n", ip, port)
+	log.Printf("Polling ONT every %ss", getenv("ONT_POLL_SEC", "60"))
 	router.Run(fmt.Sprintf("%s:%s", ip, port))
 }
 

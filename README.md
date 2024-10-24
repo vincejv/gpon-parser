@@ -32,6 +32,9 @@ Supports the following ONT models
 * `ONT_TELNET_PORT`
   * ONT Web UI password
   * Default: `23`
+* `ONT_POLL_SEC`
+  * Specifies the frequency on how often the GPON stats are pulled from the ONT
+  * Default: `60`
 * `LISTEN_PORT`
   * Port on which the exporter listens to
   * Default: `8092`
