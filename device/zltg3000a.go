@@ -201,8 +201,8 @@ func (o ZLTG3000A) GetDeviceInfo() *model.DeviceStats {
 		deviceInfo.ModelSerial = gp.PonSN
 		deviceInfo.SoftwareVersion = gp.FakeVersion
 		deviceInfo.MemoryUsage, _ = o.ParseMemoryUsage(gp.Memory)
-		deviceInfo.CpuUsage, _ = strconv.ParseFloat(gp.CPUUsage, 64)
-		deviceInfo.Uptime, _ = strconv.ParseInt(gp.Uptime, 10, 64)
+		deviceInfo.CpuUsage = util.ParseFloat(gp.CPUUsage)
+		deviceInfo.Uptime = util.ParseInt64(gp.Uptime)
 	}
 
 	return deviceInfo

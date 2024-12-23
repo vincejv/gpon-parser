@@ -2,7 +2,6 @@ package device
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/antchfx/htmlquery"
 	"github.com/vincejv/gpon-parser/model"
@@ -37,11 +36,11 @@ func (o HG6245D_Globe) GetOpticalInfo() *model.OpticalStats {
 			}
 		}
 
-		opticalInfo.TxPower, _ = strconv.ParseFloat(util.RemoveLastNChars(parsedList[0], 4), 64)
-		opticalInfo.RxPower, _ = strconv.ParseFloat(util.RemoveLastNChars(parsedList[1], 4), 64)
-		opticalInfo.Temperature, _ = strconv.ParseFloat(util.RemoveLastNChars(parsedList[2], 4), 64)
-		opticalInfo.SupplyVoltage, _ = strconv.ParseFloat(util.RemoveLastNChars(parsedList[3], 2), 64)
-		opticalInfo.BiasCurrent, _ = strconv.ParseFloat(util.RemoveLastNChars(parsedList[4], 3), 64)
+		opticalInfo.TxPower = util.ParseFloat(util.RemoveLastNChars(parsedList[0], 4))
+		opticalInfo.RxPower = util.ParseFloat(util.RemoveLastNChars(parsedList[1], 4))
+		opticalInfo.Temperature = util.ParseFloat(util.RemoveLastNChars(parsedList[2], 4))
+		opticalInfo.SupplyVoltage = util.ParseFloat(util.RemoveLastNChars(parsedList[3], 2))
+		opticalInfo.BiasCurrent = util.ParseFloat(util.RemoveLastNChars(parsedList[4], 3))
 	}
 
 	return opticalInfo
@@ -62,8 +61,8 @@ func (o HG6245D_Globe) GetDeviceInfo() *model.DeviceStats {
 		deviceInfo.DeviceModel = parsedList[0]
 		deviceInfo.ModelSerial = parsedList[1]
 		deviceInfo.SoftwareVersion = parsedList[2]
-		deviceInfo.MemoryUsage, _ = strconv.ParseFloat(util.RemoveLastNChars(parsedList[3], 1), 64)
-		deviceInfo.CpuUsage, _ = strconv.ParseFloat(util.RemoveLastNChars(parsedList[4], 1), 64)
+		deviceInfo.MemoryUsage = util.ParseFloat(util.RemoveLastNChars(parsedList[3], 1))
+		deviceInfo.CpuUsage = util.ParseFloat(util.RemoveLastNChars(parsedList[4], 1))
 		deviceInfo.Uptime = util.ParseDuration(parsedList[5])
 	}
 

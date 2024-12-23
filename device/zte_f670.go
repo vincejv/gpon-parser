@@ -265,8 +265,8 @@ func (o ZTEF670L) GetStatsFromTelnet() (deviceInfo *model.DeviceStats) {
 	deviceInfo.CpuUsage = cpuAvg
 
 	memResp := telnetResp[cpuCores+1 : cpuCores+3]
-	totalMem, _ := strconv.ParseInt(regexp.MustCompile(`[\:\\kB\s]+`).Split(memResp[0], -1)[1], 10, 64)
-	freeMem, _ := strconv.ParseInt(regexp.MustCompile(`[\:\\kB\s]+`).Split(memResp[1], -1)[1], 10, 64)
+	totalMem := util.ParseInt64(regexp.MustCompile(`[\:\\kB\s]+`).Split(memResp[0], -1)[1])
+	freeMem := util.ParseInt64(regexp.MustCompile(`[\:\\kB\s]+`).Split(memResp[1], -1)[1])
 	deviceInfo.MemoryUsage = (1 - (float64(freeMem) / float64(totalMem))) * 100
 
 	ponResp := telnetResp[cpuCores+3 : cpuCores+5]
@@ -274,7 +274,7 @@ func (o ZTEF670L) GetStatsFromTelnet() (deviceInfo *model.DeviceStats) {
 	deviceInfo.ModelSerial = string(ponSerial)
 
 	uptimeResp := telnetResp[cpuCores+5 : cpuCores+6]
-	deviceInfo.Uptime, _ = strconv.ParseInt(strings.Split(uptimeResp[0], ".")[0], 10, 64)
+	deviceInfo.Uptime = util.ParseInt64(strings.Split(uptimeResp[0], ".")[0])
 
 	return deviceInfo
 }
@@ -294,16 +294,14 @@ func (o ZTEF670L) GetOpticalInfo() *model.OpticalStats {
 
 		rxPower := strings.Split(strings.Split(cachedPage.GetStrPage(), `var RxPower = "`)[1], `";`)[0]
 		txPower := strings.Split(strings.Split(cachedPage.GetStrPage(), `var TxPower = "`)[1], `";`)[0]
-		rxPowerParsed, _ := strconv.ParseFloat(rxPower, 64)
-		txPowerParsed, _ := strconv.ParseFloat(txPower, 64)
+		rxPowerParsed := util.ParseFloat(rxPower)
+		txPowerParsed := util.ParseFloat(txPower)
 
 		opticalInfo.RxPower = rxPowerParsed / 10000
 		opticalInfo.TxPower = txPowerParsed / 10000
-		opticalInfo.Temperature, _ = strconv.ParseFloat(parsedList[4], 64)
-		buff, _ := strconv.ParseFloat(parsedList[2], 64)
-		opticalInfo.SupplyVoltage = buff / 1000000
-		buff, _ = strconv.ParseFloat(parsedList[3], 64)
-		opticalInfo.BiasCurrent = buff / 1000
+		opticalInfo.Temperature = util.ParseFloat(parsedList[4])
+		opticalInfo.SupplyVoltage = util.ParseFloat(parsedList[2]) / 1000000
+		opticalInfo.BiasCurrent = util.ParseFloat(parsedList[3]) / 1000
 	}
 
 	return opticalInfo

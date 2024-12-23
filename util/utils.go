@@ -94,3 +94,33 @@ func ParseHtmlPage(elemList *[]string, page *DocPage, xpath string) error {
 	}
 	return errors.New("unable to find xpath: " + xpath)
 }
+
+func ParseInt(s string) int {
+	i, _ := strconv.Atoi(s)
+	return i
+}
+
+func ParseInt64(s string) int64 {
+	i, _ := strconv.ParseInt(s, 10, 64)
+	return i
+}
+
+func ParseFloat(s string) float64 {
+	if s == "" {
+		return 0 // Return a default value
+	}
+	// Remove non-numeric characters (e.g., dBm, V, mA)
+	s = strings.TrimSpace(s)
+	for _, ch := range s {
+		if (ch < '0' || ch > '9') && ch != '.' {
+			s = strings.TrimSuffix(s, string(ch)) // Remove characters after the number
+		}
+	}
+
+	// Parse the cleaned string
+	f, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		return 0 // Return 0 if parsing fails
+	}
+	return f
+}

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 	"sync"
 
@@ -151,8 +150,8 @@ func (o ZLTG202) GetDeviceInfo() *model.DeviceStats {
 		deviceInfo.DeviceModel = dev.DevModel
 		deviceInfo.ModelSerial = dev.GponSN
 		deviceInfo.SoftwareVersion = dev.StVer
-		deviceInfo.MemoryUsage, _ = strconv.ParseFloat(strings.TrimSuffix(ip.MemoryUsage, "%"), 64)
-		deviceInfo.CpuUsage, _ = strconv.ParseFloat(strings.TrimSuffix(ip.CPUUsage, "%"), 64)
+		deviceInfo.MemoryUsage = util.ParseFloat(ip.MemoryUsage)
+		deviceInfo.CpuUsage = util.ParseFloat(ip.CPUUsage)
 		deviceInfo.Uptime = util.ParseDuration(ip.SystemUptime)
 	}
 
@@ -249,10 +248,10 @@ func (o ZLTG202) ParseAllStatusInit(data map[string]string) ZLTG202_AllStatusIni
 		InternetIPv6:      data["internet_ipv6"],
 		VoiceIPv4:         data["voice_ipv4"],
 		InternetMode:      data["internet_mode"],
-		WiredDev:          o.ParseInt(data["wired_dev"]),
-		Wireless2Dev:      o.ParseInt(data["wireless_2_dev"]),
-		Wireless5Dev:      o.ParseInt(data["wireless_5_dev"]),
-		AllClients:        o.ParseInt(data["all_cli"]),
+		WiredDev:          util.ParseInt(data["wired_dev"]),
+		Wireless2Dev:      util.ParseInt(data["wireless_2_dev"]),
+		Wireless5Dev:      util.ParseInt(data["wireless_5_dev"]),
+		AllClients:        util.ParseInt(data["all_cli"]),
 		LANIPAddress:      data["lan_ipAddr"],
 		LANSubnetMask:     data["lan_subnetMask"],
 		LANDNS:            data["lan_dns"],
@@ -272,15 +271,15 @@ func (o ZLTG202) ParsePonStatus(data map[string]string) ZLTG202_PonSts {
 		PonEncryption:    data["pon-encryption"],
 		PonFecUsState:    data["pon-fec-us-state"],
 		PonFecDsState:    data["pon-fec-ds-state"],
-		BytesSent:        o.ParseInt64(data["bytes-sent"]),
-		BytesReceived:    o.ParseInt64(data["bytes-received"]),
-		PacketsSent:      o.ParseInt64(data["packets-sent"]),
-		PacketsReceived:  o.ParseInt64(data["packets-received"]),
-		TxPower:          o.ParseFloat(data["tx-power"]),
-		RxPower:          o.ParseFloat(data["rx-power"]),
-		Temperature:      o.ParseFloat(data["temperature"]),
-		Voltage:          o.ParseFloat(data["voltage"]),
-		BiasCurrent:      o.ParseFloat(data["bias-current"]),
+		BytesSent:        util.ParseInt64(data["bytes-sent"]),
+		BytesReceived:    util.ParseInt64(data["bytes-received"]),
+		PacketsSent:      util.ParseInt64(data["packets-sent"]),
+		PacketsReceived:  util.ParseInt64(data["packets-received"]),
+		TxPower:          util.ParseFloat(data["tx-power"]),
+		RxPower:          util.ParseFloat(data["rx-power"]),
+		Temperature:      util.ParseFloat(data["temperature"]),
+		Voltage:          util.ParseFloat(data["voltage"]),
+		BiasCurrent:      util.ParseFloat(data["bias-current"]),
 	}
 }
 
@@ -290,63 +289,4 @@ func (o ZLTG202) ParseDeviceInfo(data map[string]string) ZLTG202_DeviceInfo {
 		GponSN:   data["gpon_sn"],
 		StVer:    data["stVer"],
 	}
-}
-
-func (o ZLTG202) ParseInt(s string) int {
-	i, _ := strconv.Atoi(s)
-	return i
-}
-
-func (o ZLTG202) ParseInt64(s string) int64 {
-	i, _ := strconv.ParseInt(s, 10, 64)
-	return i
-}
-
-func (o ZLTG202) ParseFloat(s string) float64 {
-	if s == "" {
-		return 0 // Return a default value
-	}
-	// Remove non-numeric characters (e.g., dBm, V, mA)
-	s = strings.TrimSpace(s)
-	for _, ch := range s {
-		if (ch < '0' || ch > '9') && ch != '.' {
-			s = strings.TrimSuffix(s, string(ch)) // Remove characters after the number
-		}
-	}
-
-	// Parse the cleaned string
-	f, err := strconv.ParseFloat(s, 64)
-	if err != nil {
-		return 0 // Return 0 if parsing fails
-	}
-	return f
-}
-
-func (o ZLTG202) ParseDuration(timeString string) int64 {
-	var days, hours, minutes, seconds int64
-
-	// Split input into components, e.g., ["1d", "3h", "32m", "3s"]
-	components := strings.Fields(timeString)
-
-	// Iterate through each component to extract the value and unit
-	for _, component := range components {
-		// Get the unit (last character) and the numeric part
-		unit := component[len(component)-1] // e.g., 'd', 'h', 'm', 's'
-		value, _ := strconv.ParseInt(component[:len(component)-1], 10, 64)
-
-		// Update the respective duration component based on the unit
-		switch unit {
-		case 'd':
-			days = value
-		case 'h':
-			hours = value
-		case 'm':
-			minutes = value
-		case 's':
-			seconds = value
-		}
-	}
-
-	// Convert everything to seconds and return the total
-	return days*86400 + hours*3600 + minutes*60 + seconds
 }

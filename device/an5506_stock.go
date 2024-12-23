@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
-	"strconv"
 	"strings"
 
 	"github.com/antchfx/htmlquery"
@@ -116,11 +115,11 @@ func (o AN5506_Stock) GetOpticalInfo() *model.OpticalStats {
 				return opticalInfo
 			}
 		}
-		opticalInfo.TxPower, _ = strconv.ParseFloat(util.RemoveLastNChars(parsedList[0], 4), 64)
-		opticalInfo.RxPower, _ = strconv.ParseFloat(util.RemoveLastNChars(parsedList[1], 4), 64)
-		opticalInfo.Temperature, _ = strconv.ParseFloat(util.RemoveLastNChars(parsedList[2], 4), 64)
-		opticalInfo.SupplyVoltage, _ = strconv.ParseFloat(util.RemoveLastNChars(parsedList[3], 2), 64)
-		opticalInfo.BiasCurrent, _ = strconv.ParseFloat(util.RemoveLastNChars(parsedList[4], 3), 64)
+		opticalInfo.TxPower = util.ParseFloat(util.RemoveLastNChars(parsedList[0], 4))
+		opticalInfo.RxPower = util.ParseFloat(util.RemoveLastNChars(parsedList[1], 4))
+		opticalInfo.Temperature = util.ParseFloat(util.RemoveLastNChars(parsedList[2], 4))
+		opticalInfo.SupplyVoltage = util.ParseFloat(util.RemoveLastNChars(parsedList[3], 2))
+		opticalInfo.BiasCurrent = util.ParseFloat(util.RemoveLastNChars(parsedList[4], 3))
 	}
 
 	return opticalInfo
@@ -142,8 +141,8 @@ func (o AN5506_Stock) GetDeviceInfo() *model.DeviceStats {
 		deviceInfo.DeviceModel = parsedList[2]
 		deviceInfo.ModelSerial = strings.ReplaceAll(parsedList[4], "FFFFFF", "")
 		deviceInfo.SoftwareVersion = parsedList[0]
-		deviceInfo.MemoryUsage, _ = strconv.ParseFloat(util.RemoveLastNChars(parsedList[10], 1), 64)
-		deviceInfo.CpuUsage, _ = strconv.ParseFloat(util.RemoveLastNChars(parsedList[9], 1), 64)
+		deviceInfo.MemoryUsage = util.ParseFloat(util.RemoveLastNChars(parsedList[10], 1))
+		deviceInfo.CpuUsage = util.ParseFloat(util.RemoveLastNChars(parsedList[9], 1))
 		deviceInfo.Uptime = util.ParseDuration(parsedList[13])
 	}
 
