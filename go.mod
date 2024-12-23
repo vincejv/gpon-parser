@@ -1,4 +1,4 @@
-module vincejv/gpon-parser-go
+module github.com/vincejv/gpon-parser
 
 go 1.21
 
@@ -6,6 +6,7 @@ require (
 	github.com/antchfx/htmlquery v1.3.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-co-op/gocron v1.32.0
+	github.com/reiver/go-telnet v0.0.0-20180421082511-9ff0b2ab096e
 	golang.org/x/net v0.14.0
 )
 
@@ -29,7 +30,6 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
 	github.com/reiver/go-oi v1.0.0 // indirect
-	github.com/reiver/go-telnet v0.0.0-20180421082511-9ff0b2ab096e // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
