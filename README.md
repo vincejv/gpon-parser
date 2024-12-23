@@ -12,6 +12,8 @@ Supports the following ONT models
   * `ONT_MODEL: zte_f670`
 * ZLT G3000A (Globe Telecom Philippines firmware)
   * `ONT_MODEL: zlt_g3000a`
+* ZLT G202 (Globe Telecom Philippines firmware)
+  * `ONT_MODEL: zlt_g202`
 
 ## Environment variables
 * `ONT_WEB_HOST`

@@ -20,3 +20,6 @@ type ZTEF670L struct {
 
 type ZLTG3000A struct {
 }
+
+type ZLTG202 struct {
+}

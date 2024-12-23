@@ -68,8 +68,11 @@ func initGponSvc() {
 		} else if strings.EqualFold(model, "zlt_g3000a") {
 			log.Println("ONT Model is ZLT G3000A WiFi 6")
 			device.GponSvc = new(device.ZLTG3000A)
+		} else if strings.EqualFold(model, "zlt_g202") {
+			log.Println("ONT Model is ZLT G202 WiFi 5")
+			device.GponSvc = new(device.ZLTG202)
 		} else {
-			log.Println("Invalid ONT model provided in env variable 'ONT_MODEL', valid args are ['an5506_stock', 'hg6245d_globe', 'zte_f670', 'zlt_g3000a']")
+			log.Println("Invalid ONT model provided in env variable 'ONT_MODEL', valid args are ['an5506_stock', 'hg6245d_globe', 'zte_f670', 'zlt_g3000a', 'zlt_g202']")
 			os.Exit(-10)
 		}
 	} else {
