@@ -23,3 +23,6 @@ type ZLTG3000A struct {
 
 type ZLTG202 struct {
 }
+
+type GN630V struct {
+}

@@ -2,6 +2,7 @@ package util
 
 import (
 	"errors"
+	"math"
 	"math/rand"
 	"os"
 	"strconv"
@@ -118,9 +119,46 @@ func ParseFloat(s string) float64 {
 	}
 
 	// Parse the cleaned string
-	f, err := strconv.ParseFloat(s, 64)
+	f, err := strconv.ParseFloat(strings.TrimSpace(s), 64)
 	if err != nil {
 		return 0 // Return 0 if parsing fails
 	}
 	return f
+}
+
+// ConvertPowerToDBm converts raw power value to dBm
+func ConvertPowerToDBm(power string) (float64, error) {
+	// Convert string to number
+	powerVal, err := strconv.ParseFloat(power, 64)
+	if err != nil {
+		return 0, err // Return 0 and the error if conversion fails
+	}
+
+	// Perform the conversion: log10(power / 10000)
+	convertedPower := math.Log10(powerVal / 1e4)
+
+	// Approximate the result
+	convertedPower = math.Round(convertedPower*100000) / 10000
+
+	// Return the raw float value instead of a formatted string
+	return convertedPower, nil
+}
+
+// convertWorkTemperature converts the WorkTemperature value to a float.
+func ConvertWorkTemperature(workTemperature string) (float64, error) {
+	// Convert the input string to a number
+	r, err := strconv.ParseFloat(workTemperature, 64)
+	if err != nil {
+		return 0, err // Return 0 and the error if conversion fails
+	}
+
+	// Calculate the temperature based on the conditions
+	var temperature float64
+	if r >= math.Pow(2, 15) {
+		temperature = -((math.Pow(2, 16) - r) / 256) // No rounding to keep decimal precision
+	} else {
+		temperature = r / 256 // No rounding to keep decimal precision
+	}
+
+	return temperature, nil
 }

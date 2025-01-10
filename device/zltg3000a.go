@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"math"
 	"strconv"
 	"strings"
 	"sync"
@@ -180,9 +179,9 @@ func (o ZLTG3000A) GetOpticalInfo() *model.OpticalStats {
 		opticalInfo = new(model.OpticalStats)
 		gp := cachedGponData.GetGponData()
 
-		opticalInfo.TxPower, _ = o.ConvertPowerToDBm(gp.TxPower)
-		opticalInfo.RxPower, _ = o.ConvertPowerToDBm(gp.RxPower)
-		opticalInfo.Temperature, _ = o.ConvertWorkTemperature(gp.WorkTemperature)
+		opticalInfo.TxPower, _ = util.ConvertPowerToDBm(gp.TxPower)
+		opticalInfo.RxPower, _ = util.ConvertPowerToDBm(gp.RxPower)
+		opticalInfo.Temperature, _ = util.ConvertWorkTemperature(gp.WorkTemperature)
 		// opticalInfo.SupplyVoltage  info not available
 		// opticalInfo.BiasCurrent    info not available
 	}
@@ -206,41 +205,4 @@ func (o ZLTG3000A) GetDeviceInfo() *model.DeviceStats {
 	}
 
 	return deviceInfo
-}
-
-// ConvertPowerToDBm converts raw power value to dBm
-func (o ZLTG3000A) ConvertPowerToDBm(power string) (float64, error) {
-	// Convert string to number
-	powerVal, err := strconv.ParseFloat(power, 64)
-	if err != nil {
-		return 0, err // Return 0 and the error if conversion fails
-	}
-
-	// Perform the conversion: log10(power / 10000)
-	convertedPower := math.Log10(powerVal / 1e4)
-
-	// Approximate the result
-	convertedPower = math.Round(convertedPower*100000) / 10000
-
-	// Return the raw float value instead of a formatted string
-	return convertedPower, nil
-}
-
-// convertWorkTemperature converts the WorkTemperature value to a float.
-func (o ZLTG3000A) ConvertWorkTemperature(workTemperature string) (float64, error) {
-	// Convert the input string to a number
-	r, err := strconv.ParseFloat(workTemperature, 64)
-	if err != nil {
-		return 0, err // Return 0 and the error if conversion fails
-	}
-
-	// Calculate the temperature based on the conditions
-	var temperature float64
-	if r >= math.Pow(2, 15) {
-		temperature = -((math.Pow(2, 16) - r) / 256) // No rounding to keep decimal precision
-	} else {
-		temperature = r / 256 // No rounding to keep decimal precision
-	}
-
-	return temperature, nil
 }

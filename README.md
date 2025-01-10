@@ -14,6 +14,8 @@ Supports the following ONT models
   * `ONT_MODEL: zlt_g3000a`
 * ZLT G202 (Globe Telecom Philippines firmware)
   * `ONT_MODEL: zlt_g202`
+* Skyworth GN630V (Stock firmware)
+  * `ONT_MODEL: skyworth_gn630v`
 
 ## Environment variables
 * `ONT_WEB_HOST`
