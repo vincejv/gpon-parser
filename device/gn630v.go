@@ -3,6 +3,7 @@ package device
 import (
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -47,7 +48,8 @@ func (o GN630V) Login() {
 	// Prepare the POST request
 	req, err := http.NewRequest("POST", loginURL, strings.NewReader(formData.Encode()))
 	if err != nil {
-		panic(err)
+		log.Printf("Can't login: %s\n", err.Error())
+		return
 	}
 
 	// Add necessary headers for login
@@ -56,7 +58,8 @@ func (o GN630V) Login() {
 	// Perform the POST request to login
 	resp, err := client.Do(req)
 	if err != nil {
-		panic(err)
+		log.Printf("Can't login: %s\n", err.Error())
+		return
 	}
 	defer resp.Body.Close()
 
@@ -72,7 +75,7 @@ func (o GN630V) FetchPage(url string) string {
 	getURL := fmt.Sprintf("%s%s", o.GetGponUrl(), url)
 	req, err := http.NewRequest("GET", getURL, nil)
 	if err != nil {
-		panic(err)
+		log.Printf("Can't fetch page: %s\n", err.Error())
 	}
 
 	usern := util.Getenv("ONT_WEB_USER", "user")
