@@ -37,7 +37,7 @@ func PerformTelnetLogin(conn *telnet.Conn, user string, pass string) error {
 	WriteTelnet(conn, pass)
 	telnetReply := readTelnet(conn, "/ #")
 	if !strings.Contains(telnetReply, "/ #") {
-		if strings.Contains(telnetReply, "Access denied") {
+		if strings.Contains(telnetReply, "Access denied") || strings.Contains(telnetReply, "incorrect") {
 			return errors.New("access denied")
 		}
 		return errors.New("telnet not ready")
@@ -55,7 +55,7 @@ func readTelnet(conn *telnet.Conn, expect string) (out string) {
 	for {
 		n, err = conn.Read(recvData)
 		//fmt.Println("Bytes: ", n, "Data: ", recvData, string(recvData))
-		if n <= 0 || err != nil || strings.Contains(out, expect) || strings.Contains(out, "Access denied") {
+		if n <= 0 || err != nil || strings.Contains(out, expect) || strings.Contains(out, "Access denied") || strings.Contains(out, "incorrect") {
 			break
 		} else {
 			out += string(recvData)
