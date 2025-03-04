@@ -225,10 +225,10 @@ func (o ZTEF670L) GetStatsFromTelnet() (deviceInfo *model.DeviceStats) {
 
 	err = util.PerformTelnetLogin(conn, telnetUsern, telnetPassw)
 	if err != nil {
-		if err.Error() == "access denied" {
+		if err.Error() == "access denied" || strings.Contains(err.Error(), "incorrect") {
 			TelnetInit.SetFlag(false)
-			log.Println("Unable to login to telnet with the last known credentials, will retry to regenerate credentials after 5 seconds")
-			time.Sleep(5 * time.Second)
+			log.Println("Unable to login to telnet with the last known credentials, will retry to regenerate credentials after 3 seconds")
+			time.Sleep(3 * time.Second)
 			return o.GetStatsFromTelnet()
 		} else {
 			log.Println(err.Error())
