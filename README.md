@@ -1,14 +1,68 @@
-# GPON Parser (GPON Stats exporter)
+# GPON Parser (GPON Stats Exporter)
 
-Supports the following ONT models
+GPON Parser is a Telegraf exporter written in Go that parses and exports GPON ONT/ONU statistics via REST API (JSON format). It is designed for seamless integration with Telegraf, InfluxDB, and Grafana for monitoring and visualization of key performance metrics such as CPU usage, RAM usage, optical RX/TX power, bias current, voltage, and temperature.
+
+## Features
+
+- Fetches GPON ONT/ONU statistics via REST API
+- Monitors CPU usage, RAM usage, optical RX/TX power, bias current, voltage, and temperature
+- Outputs data in JSON format for easy processing
+- Compatible with Telegraf for InfluxDB ingestion
+- Supports visualization in Grafana
+
+## Installation
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/vincejv/gpon-parser
+   cd gpon-parser
+   ```
+2. Build the binary (see in [detail](#building-from-source))
+   ```sh
+   go build -ldflags "-s -w" -o gpon-parser
+   ```
+3. Configure the [environment variables](#environment-variables) for a specific ONT model or config.
+
+## Usage
+
+Run the exporter with:
+
+```sh
+./gpon-parser
+```
+
+## Integration with Telegraf
+
+Configure Telegraf to scrape the exported JSON data using the `inputs.http` plugin.
+`telegraf/telegraf.d/gpon-monitoring.conf`
+```
+[[inputs.http]]
+  name_override="gpon_monitoring"
+
+  urls = [
+    "http://gpon-monitoring.docker.internal:8092/gpon/deviceInfo",
+    "http://gpon-monitoring.docker.internal:8092/gpon/opticalInfo",
+  ]
+
+  data_format = "json"
+
+  json_string_fields = [
+    "deviceModel",
+    "modelSerial",
+    "softwareVersion",
+  ]
+
+  [inputs.http.tags]
+    area = "home"
+```
+
+## ONT Model supported
 
 * FiberHome HG6245D (Globe Telecom Philippines firmware)
   * `ONT_MODEL: hg6245d_globe`
 * FiberHome AN5506_04F1A (Globe Telecom Philippines firmware) and other generic FH ONT with generic firmware
   * `ONT_MODEL: an5506_stock`
-* ZTE F670
-  * `ONT_MODEL: zte_f670`
-* ZTE F660
+* ZTE F660 and F670
   * `ONT_MODEL: zte_f670`
 * ZLT G3000A (Globe Telecom Philippines firmware)
   * `ONT_MODEL: zlt_g3000a`
@@ -122,7 +176,7 @@ services:
 }
 ```
 
-## Footnotes
+## Building from source
 
 ### Building the package
 ```sh
