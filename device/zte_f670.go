@@ -26,6 +26,7 @@ import (
 
 var client http.Client
 var TelnetInit util.GlobalFlag
+var TelnetReset util.GlobalFlag
 var TelnetScripts util.GlobalFlag
 var telnetCreds util.LoginCreds
 var deviceStatCached util.CachedStat
@@ -208,25 +209,38 @@ func (o ZTEF670L) GetStatsFromTelnet() (deviceInfo *model.DeviceStats) {
 	var telnetUsern string
 	var telnetPassw string
 
-	if !TelnetInit.GetFlag() {
-		TelnetInit.SetFlag(true)
+	conn, err := telnet.DialTo(o.GetTelnetUrl())
+
+	if err != nil || TelnetReset.GetFlag() {
+		log.Println("Unable to dial telnet on " + o.GetTelnetUrl() + ", trying factory mode")
+
+		if err == nil && TelnetReset.GetFlag() {
+			log.Println("Requested telnet reset even if telnet is available")
+			log.Println("Closing telnet")
+			conn.Close()
+		}
+
+		// Initiate telnet reset through factory mode
 		telnetUsern, telnetPassw = o.FactoryMode(o.GetWebUsern(), o.GetWebPassw())
 		telnetCreds.SetCreds(telnetUsern, telnetPassw)
-		log.Println("New telnet creds: " + telnetUsern + " | " + telnetPassw)
-	} else {
-		telnetUsern, telnetPassw = telnetCreds.GetCreds()
+		log.Println("Generated telnet creds: " + telnetUsern + " | " + telnetPassw)
+
+		TelnetInit.SetFlag(true) // flag to check if telnet is in factory mode
+		TelnetReset.SetFlag(false)
+
+		return o.GetStatsFromTelnet()
 	}
 
-	conn, err := telnet.DialTo(o.GetTelnetUrl())
-	if err != nil {
-		log.Println("Unable to dial telnet on " + o.GetTelnetUrl() + " check your internet connection")
-		return deviceInfo
+	if !TelnetInit.GetFlag() {
+		telnetCreds.SetCreds(o.GetWebUsern(), o.GetWebPassw())
 	}
 
+	telnetUsern, telnetPassw = telnetCreds.GetCreds()
 	err = util.PerformTelnetLogin(conn, telnetUsern, telnetPassw)
+
 	if err != nil {
 		if err.Error() == "access denied" {
-			TelnetInit.SetFlag(false)
+			TelnetReset.SetFlag(true) // request telnet credential reset
 			log.Println("Unable to login to telnet with the last known credentials, will retry to regenerate credentials after 3 seconds")
 			time.Sleep(3 * time.Second)
 			return o.GetStatsFromTelnet()
@@ -241,6 +255,20 @@ func (o ZTEF670L) GetStatsFromTelnet() (deviceInfo *model.DeviceStats) {
 		TelnetScripts.SetFlag(true)
 		log.Println("Running telnet custom scripts")
 		util.ExecTelnet(conn, `ifconfig nbif0 mtu 1600 up`)
+
+		if TelnetInit.GetFlag() {
+			log.Println("Enabling permanent telnet")
+			util.ExecTelnet(conn, `sendcmd 1 DB set TelnetCfg 0 TS_Enable 1`)
+			util.ExecTelnet(conn, `sendcmd 1 DB set TelnetCfg 0 Lan_Enable 1`)
+			util.ExecTelnet(conn, `sendcmd 1 DB set TelnetCfg 0 TS_UName `+o.GetWebUsern())
+			util.ExecTelnet(conn, `sendcmd 1 DB set TelnetCfg 0 TS_UPwd `+o.GetWebPassw())
+			util.ExecTelnet(conn, `sendcmd 1 DB saveasy`)
+			log.Println("Permanent telnet login will be web username and password")
+			telnetCreds.SetCreds(o.GetWebUsern(), o.GetWebPassw())
+			TelnetInit.SetFlag(false)
+		} else {
+			log.Println("Already on permanent telnet mode, skipping permanent telnet config")
+		}
 	}
 
 	telnetResp := strings.Split(util.ExecTelnet(conn, `cat /proc/cpuusage && cat /proc/meminfo | grep "MemFree\|MemTotal" && setmac show | grep "2176\|2177" && cat /proc/uptime`), "\n")
