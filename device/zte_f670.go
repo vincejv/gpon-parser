@@ -240,7 +240,15 @@ func (o ZTEF670L) GetStatsFromTelnet() (deviceInfo *model.DeviceStats) {
 	if !TelnetScripts.GetFlag() {
 		TelnetScripts.SetFlag(true)
 		log.Println("Running telnet custom scripts")
-		util.ExecTelnet(conn, `ifconfig nbif0 mtu 1600 up`)
+		telnetResp := strings.Split(util.ExecTelnet(conn, `ip link show nbif0 | awk '{for(i=1;i<=NF;i++) if ($i=="mtu") print $(i+1)}'`), "\n")
+		mtu := strings.TrimSpace(telnetResp[1])
+		if mtu != "1600" {
+			log.Println("nbif0 mtu is currently " + mtu + " bytes")
+			util.ExecTelnet(conn, `ifconfig nbif0 mtu 1600 up`)
+			log.Println("nbif0 mtu updated to 1600 bytes")
+		} else {
+			log.Println("nbif0 mtu is already 1600 bytes")
+		}
 	}
 
 	telnetResp := strings.Split(util.ExecTelnet(conn, `cat /proc/cpuusage && cat /proc/meminfo | grep "MemFree\|MemTotal" && setmac show | grep "2176\|2177" && cat /proc/uptime`), "\n")
