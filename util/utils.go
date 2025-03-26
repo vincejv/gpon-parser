@@ -5,6 +5,7 @@ import (
 	"math"
 	"math/rand"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -22,43 +23,21 @@ func RemoveLastNChars(s string, lengthNChars int) string {
 func ParseDuration(timeString string) int64 {
 	var days, hours, minutes, seconds int64
 
-	// Split the input string into components (separated by whitespace)
-	components := strings.Fields(timeString)
+	// Regular expression to match time units (with or without spaces)
+	re := regexp.MustCompile(`(\d+)\s*(d|h|m|s)`)
+	matches := re.FindAllStringSubmatch(timeString, -1)
 
-	// Iterate through each component
-	for _, component := range components {
-		var unit string
-		var valueStr string
+	// Iterate through matches
+	for _, match := range matches {
+		valueStr, unit := match[1], match[2]
 
-		// Handle cases with space between number and unit (like "1 d", "3 h", "32 m", "5 s")
-		if len(component) > 1 && (component[len(component)-1] == 'd' || component[len(component)-1] == 'h' || component[len(component)-1] == 'm' || component[len(component)-1] == 's') {
-			// This is the case where the numeric value and the unit are separated by a space
-			unit = string(component[len(component)-1]) // 'd', 'h', 'm', or 's'
-			valueStr = component[:len(component)-1]
-		} else {
-			// Handle full units (like "days", "hours", "minutes", "seconds")
-			if strings.HasSuffix(component, "days") {
-				unit = "d"
-				valueStr = component[:len(component)-4]
-			} else if strings.HasSuffix(component, "hours") {
-				unit = "h"
-				valueStr = component[:len(component)-5]
-			} else if strings.HasSuffix(component, "minutes") {
-				unit = "m"
-				valueStr = component[:len(component)-7]
-			} else if strings.HasSuffix(component, "seconds") {
-				unit = "s"
-				valueStr = component[:len(component)-7]
-			}
-		}
-
-		// Parse the numeric part into an integer
+		// Convert value to int64
 		value, err := strconv.ParseInt(valueStr, 10, 64)
 		if err != nil {
-			continue // Skip invalid parts
+			continue
 		}
 
-		// Update the respective duration component based on the unit
+		// Assign value to corresponding unit
 		switch unit {
 		case "d":
 			days = value
