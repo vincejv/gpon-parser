@@ -219,7 +219,8 @@ func (o ZTEF670L) GetStatsFromTelnet() (deviceInfo *model.DeviceStats) {
 
 	conn, err := telnet.DialTo(o.GetTelnetUrl())
 	if err != nil {
-		log.Println("Unable to dial telnet on " + o.GetTelnetUrl() + " check your internet connection")
+		TelnetInit.SetFlag(false)
+		log.Println("Unable to dial telnet on " + o.GetTelnetUrl() + " will regenerate credentials after next stat pull")
 		return deviceInfo
 	}
 
