@@ -70,7 +70,7 @@ Configure Telegraf to scrape the exported JSON data using the `inputs.http` plug
   * `ONT_MODEL: zlt_g202`
 * Skyworth GN630V (Stock firmware)
   * `ONT_MODEL: skyworth_gn630v`
-* Nokia G-010S-A/P (OpenWrt firmware)
+* Nokia G-010S-A/P (OpenWrt firmware) (must add [this script](deps/g010s.sh) to `rootfs` and add it as a Publicly accessed "custom command" through LuCi)
   * `ONT_MODEL: nokia_g010s`
 
 ## Environment variables
