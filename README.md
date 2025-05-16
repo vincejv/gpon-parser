@@ -70,6 +70,8 @@ Configure Telegraf to scrape the exported JSON data using the `inputs.http` plug
   * `ONT_MODEL: zlt_g202`
 * Skyworth GN630V (Stock firmware)
   * `ONT_MODEL: skyworth_gn630v`
+* Nokia G-010S-A/P (OpenWrt firmware)
+  * `ONT_MODEL: nokia_g010s`
 
 ## Environment variables
 * `ONT_WEB_HOST`
@@ -99,6 +101,10 @@ Configure Telegraf to scrape the exported JSON data using the `inputs.http` plug
 * `LISTEN_IP`
   * Ip address on which the exporter listens to
   * Default: `0.0.0.0`
+* `G010S_SCRIPT_URL`
+  * OpenWrt url path to fetch the system and GPON stats, it is formatted as `ONT_WEB_PROTOCOL://ONT_WEB_HOST:ONT_WEB_PORT/cgi-bin/luci/command/G010S_SCRIPT_URL
+`
+  * Default: `cfg149944`
 
 ## Running
 Docker Pull

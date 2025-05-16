@@ -26,3 +26,6 @@ type ZLTG202 struct {
 
 type GN630V struct {
 }
+
+type NOKIA_G010S struct {
+}

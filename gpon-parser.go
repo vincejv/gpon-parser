@@ -74,6 +74,9 @@ func initGponSvc() {
 		} else if strings.EqualFold(model, "skyworth_gn630v") {
 			log.Println("ONT Model is Skyworth GN630V WiFi 6")
 			device.GponSvc = new(device.GN630V)
+		} else if strings.EqualFold(model, "nokia_g010s") {
+			log.Println("ONT Model is Nokia G-010S-A/P SFP Module")
+			device.GponSvc = new(device.NOKIA_G010S)
 		} else {
 			log.Println("Invalid ONT model provided in env variable 'ONT_MODEL', valid args are ['an5506_stock', 'hg6245d_globe', 'zte_f670', 'zlt_g3000a', 'zlt_g202', 'skyworth_gn630v']")
 			os.Exit(-10)

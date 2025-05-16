@@ -141,3 +141,30 @@ func ConvertWorkTemperature(workTemperature string) (float64, error) {
 
 	return temperature, nil
 }
+
+func ExtractAfter(input, prefix, suffix string) string {
+	start := strings.Index(input, prefix)
+	if start == -1 {
+		return ""
+	}
+	start += len(prefix)
+
+	end := strings.Index(input[start:], suffix)
+	if end == -1 {
+		return ""
+	}
+	return strings.TrimSpace(input[start : start+end])
+}
+
+func ExtractLineValue(input, prefix string) string {
+	lines := strings.Split(input, "\n")
+	for _, line := range lines {
+		if strings.HasPrefix(line, prefix) {
+			parts := strings.SplitN(line, ":", 2)
+			if len(parts) == 2 {
+				return strings.TrimSpace(parts[1])
+			}
+		}
+	}
+	return ""
+}
