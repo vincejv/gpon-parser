@@ -158,6 +158,9 @@ func (o ZLTG3000A) fetchData(url string, jsonData []byte) (*ZLTG3000A_Payload, e
 
 // cron job
 func (o ZLTG3000A) UpdateCachedPage() {
+	// clear previous cache
+	cachedGponData.SetGponData(nil)
+
 	// Define the URL and request body
 	url := o.GetGponUrl()
 	jsonData := []byte(`{"cmd":481,"method":"GET","sessionId":""}`)
@@ -167,8 +170,6 @@ func (o ZLTG3000A) UpdateCachedPage() {
 
 	if err == nil {
 		cachedGponData.SetGponData(response)
-	} else {
-		cachedGponData.SetGponData(nil)
 	}
 }
 

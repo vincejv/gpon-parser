@@ -64,15 +64,11 @@ func (o ZTEF670L) GrabLoginTokens() (loginTok string, csrfTok string) {
 	req, err := http.NewRequest("GET", o.GetGponUrl()+"/", nil)
 	if err != nil {
 		log.Println(err)
-		cachedPage.SetPage(nil)
-		cachedPage2.SetPage(nil)
 		return
 	}
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Println(err)
-		cachedPage.SetPage(nil)
-		cachedPage2.SetPage(nil)
 		return
 	}
 	defer resp.Body.Close()
@@ -96,6 +92,10 @@ func (o ZTEF670L) GrabLoginTokens() (loginTok string, csrfTok string) {
 
 // cron job
 func (o ZTEF670L) UpdateCachedPage() {
+	// clear previous cache
+	cachedPage.SetPage(nil)
+	cachedPage2.SetPage(nil)
+
 	// Cookie jar setup
 	options := cookiejar.Options{
 		PublicSuffixList: publicsuffix.List,
@@ -103,8 +103,6 @@ func (o ZTEF670L) UpdateCachedPage() {
 	jar, err := cookiejar.New(&options)
 	if err != nil {
 		log.Println(err)
-		cachedPage.SetPage(nil)
-		cachedPage2.SetPage(nil)
 		return
 	}
 	client = http.Client{Jar: jar}
@@ -131,16 +129,12 @@ func (o ZTEF670L) UpdateCachedPage() {
 	req, err := http.NewRequest("POST", o.GetGponUrl()+"/", strings.NewReader(form.Encode()))
 	if err != nil {
 		log.Println(err)
-		cachedPage.SetPage(nil)
-		cachedPage2.SetPage(nil)
 		return
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Println(err)
-		cachedPage.SetPage(nil)
-		cachedPage2.SetPage(nil)
 		return
 	}
 	defer resp.Body.Close()
@@ -158,8 +152,6 @@ func (o ZTEF670L) UpdateCachedPage() {
 	req, err = http.NewRequest("POST", o.GetGponUrl()+"/", strings.NewReader(form.Encode()))
 	if err != nil {
 		log.Println(err)
-		cachedPage.SetPage(nil)
-		cachedPage2.SetPage(nil)
 		return
 	}
 

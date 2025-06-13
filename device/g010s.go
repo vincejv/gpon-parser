@@ -20,6 +20,8 @@ func (o NOKIA_G010S) GetGponUrl() string {
 
 // cron job
 func (o NOKIA_G010S) UpdateCachedPage() {
+	cachedPage.SetStrPage("")
+
 	resp, err := http.Get(GponSvc.GetGponUrl())
 	if err != nil {
 		log.Println("Error fetching URL:", err)
@@ -36,7 +38,6 @@ func (o NOKIA_G010S) UpdateCachedPage() {
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Println("Error reading body:", err)
-		cachedPage.SetStrPage("")
 		return
 	} else {
 		cachedPage.SetStrPage(string(body))

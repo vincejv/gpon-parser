@@ -103,6 +103,10 @@ func (o GN630V) FetchPage(url string) string {
 
 // cron job
 func (o GN630V) UpdateCachedPage() {
+	// clear old cache
+	cachedPage.SetPage(nil)
+	cachedPage2.SetStrPage("")
+
 	// login
 	o.Login()
 
@@ -110,16 +114,12 @@ func (o GN630V) UpdateCachedPage() {
 	doc, err := htmlquery.Parse(strings.NewReader(o.FetchPage("/cgi-bin/sta-device.asp")))
 	if err == nil {
 		cachedPage.SetPage(doc)
-	} else {
-		cachedPage.SetPage(nil)
 	}
 
 	// gpon page
 	buffPage := o.FetchPage("/cgi-bin/sta-network.asp")
 	if len(buffPage) > 0 {
 		cachedPage2.SetStrPage(buffPage)
-	} else {
-		cachedPage2.SetStrPage("")
 	}
 }
 

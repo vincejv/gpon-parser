@@ -83,6 +83,9 @@ func (gponPayload *ZLTG202_Payload) SetGponData(pon *ZLTG202_PonSts, dev *ZLTG20
 
 // cron job
 func (o ZLTG202) UpdateCachedPage() {
+	// clear previous cache
+	cachedZltG202Data.SetGponData(nil, nil, nil)
+
 	// Define the URL and request body
 	url := o.GetGponUrl()
 
@@ -93,7 +96,6 @@ func (o ZLTG202) UpdateCachedPage() {
 	allStatusData, err := o.FetchAndParse(url+"getASPdata/all_status_init", headers)
 	if err != nil {
 		log.Printf("Error fetching all status: %s", err.Error())
-		cachedZltG202Data.SetGponData(nil, nil, nil)
 		return
 	}
 	allStatus := o.ParseAllStatusInit(allStatusData)
@@ -103,7 +105,6 @@ func (o ZLTG202) UpdateCachedPage() {
 	ponStatusData, err := o.FetchAndParse(url+"getASPdata/new_ponGetStatus", headers)
 	if err != nil {
 		log.Printf("Error fetching PON status: %s", err.Error())
-		cachedZltG202Data.SetGponData(nil, nil, nil)
 		return
 	}
 	ponStatus := o.ParsePonStatus(ponStatusData)
@@ -113,7 +114,6 @@ func (o ZLTG202) UpdateCachedPage() {
 	deviceInfoData, err := o.FetchAndParse(url+"getinfo/devModel&gpon_sn&stVer&", headers)
 	if err != nil {
 		log.Printf("Error fetching device info: %s", err.Error())
-		cachedZltG202Data.SetGponData(nil, nil, nil)
 		return
 	}
 	deviceInfo := o.ParseDeviceInfo(deviceInfoData)
@@ -121,8 +121,6 @@ func (o ZLTG202) UpdateCachedPage() {
 
 	if err == nil {
 		cachedZltG202Data.SetGponData(&ponStatus, &deviceInfo, &allStatus)
-	} else {
-		cachedZltG202Data.SetGponData(nil, nil, nil)
 	}
 }
 

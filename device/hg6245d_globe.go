@@ -16,11 +16,10 @@ func (o HG6245D_Globe) GetGponUrl() string {
 
 // cron job
 func (o HG6245D_Globe) UpdateCachedPage() {
+	cachedPage.SetPage(nil)
 	doc, err := htmlquery.LoadURL(GponSvc.GetGponUrl())
 	if err == nil {
 		cachedPage.SetPage(doc)
-	} else {
-		cachedPage.SetPage(nil)
 	}
 }
 

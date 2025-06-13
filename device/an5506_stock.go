@@ -23,14 +23,16 @@ func (o AN5506_Stock) GetGponUrl() string {
 
 // cron job
 func (o AN5506_Stock) UpdateCachedPage() {
+	// clear old cache
+	cachedPage.SetPage(nil)
+	cachedPage2.SetPage(nil)
+
 	options := cookiejar.Options{
 		PublicSuffixList: publicsuffix.List,
 	}
 	jar, err := cookiejar.New(&options)
 	if err != nil {
 		log.Println(err)
-		cachedPage.SetPage(nil)
-		cachedPage2.SetPage(nil)
 		return
 	}
 
@@ -43,8 +45,6 @@ func (o AN5506_Stock) UpdateCachedPage() {
 	req, err := http.NewRequest("POST", o.GetGponUrl()+"/goform/webLogin", strings.NewReader(form.Encode()))
 	if err != nil {
 		log.Println(err)
-		cachedPage.SetPage(nil)
-		cachedPage2.SetPage(nil)
 		return
 	}
 
@@ -53,8 +53,6 @@ func (o AN5506_Stock) UpdateCachedPage() {
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Println(err)
-		cachedPage.SetPage(nil)
-		cachedPage2.SetPage(nil)
 		return
 	}
 	defer resp.Body.Close()
@@ -69,8 +67,6 @@ func (o AN5506_Stock) UpdateCachedPage() {
 	req, err = http.NewRequest("GET", o.GetGponUrl()+"/goform/webLogout", nil)
 	if err != nil {
 		log.Println(err)
-		cachedPage.SetPage(nil)
-		cachedPage2.SetPage(nil)
 		return
 	}
 
